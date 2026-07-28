@@ -50,14 +50,7 @@
     </section>
 
     <section class="display" aria-live="polite">
-      <div class="display-meta">
-        <span class="current-label" id="currentLabel">Current expression</span>
-        <button type="button" class="icon-btn expand-btn" id="sciToggle" aria-label="Show scientific functions" aria-expanded="false">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-            <path fill="currentColor" d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
-          </svg>
-        </button>
-      </div>
+      <span class="current-label" id="currentLabel">Current expression</span>
       <div class="expression-wrap">
         <div class="expression" id="expression" tabindex="0" aria-label="Expression">0</div>
       </div>
@@ -65,6 +58,14 @@
     </section>
 
     <section class="keypad" id="keypad">
+      <div class="keypad-toolbar">
+        <button type="button" class="icon-btn expand-btn" id="sciToggle" aria-label="Show scientific functions" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path fill="currentColor" d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+          </svg>
+        </button>
+      </div>
+
       <div class="sci-pad" id="sciPad" hidden>
         <button type="button" class="key sci" data-key="sqrt">√</button>
         <button type="button" class="key sci" data-key="pi">π</button>

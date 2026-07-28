@@ -31,7 +31,7 @@ Ignore Material You dynamic colors from screenshots — stock pulls theme from t
 | **Landscape (phone)** | 5-column **pill** keys: `7 8 9 AC ×` / `4 5 6 () −` / `1 2 3 % +` / `0 . ⌫ ÷ =` |
 | **Wide tablet/desktop** | Persistent **history** column left + 5-column pill keypad |
 
-Scientific pad toggles above the main pad (√ π ^ ! Deg/Rad sin cos tan Inv e ln log).
+- Scientific pad toggles via a chevron **on the left above the keypad** (not over the expression). With sci open in portrait, main keys become pills like stock.
 
 ## Source map
 

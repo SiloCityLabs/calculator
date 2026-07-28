@@ -537,11 +537,13 @@
   el.sciToggle.addEventListener("click", () => {
     state.scientific = !state.scientific;
     el.sciPad.hidden = !state.scientific;
+    el.app.classList.toggle("scientific", state.scientific);
     el.sciToggle.setAttribute("aria-expanded", String(state.scientific));
     el.sciToggle.setAttribute(
       "aria-label",
       state.scientific ? "Hide scientific functions" : "Show scientific functions"
     );
+    requestAnimationFrame(fitExpression);
   });
 
   const wideMq = window.matchMedia("(min-width: 900px) and (min-aspect-ratio: 1/1)");
