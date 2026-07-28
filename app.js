@@ -6,8 +6,10 @@
   const STORAGE_FORMAT = "calc.format.v1";
   const STORAGE_ANGLE = "calc.angle.v1";
   const STORAGE_THEME = "calc.theme.v1";
+  const STORAGE_HAPTICS = "calc.haptics.v1";
   const MAX_HISTORY = 100;
   const THEME_ORDER = ["system", "light", "dark"];
+  const HAPTIC_MS = 12;
 
   const el = {
     app: document.getElementById("app"),
@@ -24,6 +26,7 @@
     invToggle: document.getElementById("invToggle"),
     formatLabel: document.getElementById("formatLabel"),
     themeLabel: document.getElementById("themeLabel"),
+    hapticsLabel: document.getElementById("hapticsLabel"),
     themeColor: document.getElementById("themeColor"),
     installItem: document.getElementById("installItem"),
     toast: document.getElementById("toast"),
@@ -42,6 +45,7 @@
       const t = localStorage.getItem(STORAGE_THEME);
       return THEME_ORDER.includes(t) ? t : "system";
     })(),
+    haptics: localStorage.getItem(STORAGE_HAPTICS) !== "off",
     history: loadHistory(),
     memory: Number(localStorage.getItem(STORAGE_MEMORY) || 0),
     selectedHistory: null,
@@ -81,6 +85,28 @@
     const resolved = resolvedTheme();
     const color = resolved === "light" ? "#f7f5fa" : "#0b0e21";
     if (el.themeColor) el.themeColor.setAttribute("content", color);
+  }
+
+  function hapticsSupported() {
+    return typeof navigator !== "undefined" && typeof navigator.vibrate === "function";
+  }
+
+  function syncHapticsLabel() {
+    if (!el.hapticsLabel) return;
+    if (!hapticsSupported()) {
+      el.hapticsLabel.textContent = "n/a";
+      return;
+    }
+    el.hapticsLabel.textContent = state.haptics ? "on" : "off";
+  }
+
+  function haptic(ms = HAPTIC_MS) {
+    if (!state.haptics || !hapticsSupported()) return;
+    try {
+      navigator.vibrate(ms);
+    } catch {
+      /* ignore */
+    }
   }
 
   function displayExpr() {
@@ -501,6 +527,10 @@
   }
 
   document.querySelectorAll(".key").forEach((btn) => {
+    btn.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      haptic(btn.dataset.key === "=" || btn.dataset.key === "AC" ? 18 : HAPTIC_MS);
+    });
     btn.addEventListener("click", () => handleKey(btn.dataset.key));
   });
 
@@ -579,6 +609,16 @@
       localStorage.setItem(STORAGE_THEME, state.theme);
       applyTheme();
       toast(`Theme: ${state.theme}`);
+    } else if (action === "toggle-haptics") {
+      if (!hapticsSupported()) {
+        toast("Haptics not supported here");
+        return;
+      }
+      state.haptics = !state.haptics;
+      localStorage.setItem(STORAGE_HAPTICS, state.haptics ? "on" : "off");
+      syncHapticsLabel();
+      if (state.haptics) haptic(20);
+      toast(`Haptics: ${state.haptics ? "on" : "off"}`);
     } else if (action === "toggle-format") {
       state.useGrouping = !state.useGrouping;
       localStorage.setItem(STORAGE_FORMAT, state.useGrouping ? "standard" : "plain");
@@ -648,6 +688,7 @@
   updateInvLabels();
   el.formatLabel.textContent = state.useGrouping ? "standard" : "plain";
   applyTheme();
+  syncHapticsLabel();
   window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
     if (state.theme === "system") applyTheme();
   });

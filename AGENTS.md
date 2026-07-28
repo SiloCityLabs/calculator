@@ -58,6 +58,7 @@ Reference Play Store screenshots may live under `images/` but are **gitignored**
 - PWA icons: `purpose: any` = circular with transparent corners; `purpose: maskable` = opaque full-bleed square (avoids “square inside a circle”).
 - After icon/manifest changes, users often must **uninstall + reinstall** the PWA for the launcher icon to refresh.
 - Prefer matching Google Calculator UX over inventing new patterns.
+- Button haptics use `navigator.vibrate` (Android Chrome / installed PWA). Toggle in the ⋮ menu; no-op where unsupported (e.g. iOS).
 
 ## Themes
 
