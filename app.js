@@ -305,7 +305,7 @@
     });
     state.history = state.history.slice(0, MAX_HISTORY);
     saveHistory();
-    if (state.historyOpen) renderHistory();
+    if (state.historyOpen || isWide()) renderHistory();
   }
 
   function renderHistory() {
@@ -493,16 +493,39 @@
     );
   });
 
-  el.historyToggle.addEventListener("click", () => {
-    state.historyOpen = !state.historyOpen;
+  const wideMq = window.matchMedia("(min-width: 900px) and (min-aspect-ratio: 1/1)");
+
+  function isWide() {
+    return wideMq.matches;
+  }
+
+  function syncHistoryUi() {
+    const wide = isWide();
+    el.app.classList.toggle("wide", wide);
+    el.historyToggle.classList.toggle("history-toggle-wide-hide", wide);
+
+    if (wide) {
+      el.historyPanel.hidden = false;
+      el.app.classList.add("history-open");
+      el.historyToggle.setAttribute("aria-expanded", "true");
+      renderHistory();
+      return;
+    }
+
     el.historyPanel.hidden = !state.historyOpen;
     el.app.classList.toggle("history-open", state.historyOpen);
     el.historyToggle.setAttribute("aria-expanded", String(state.historyOpen));
     if (state.historyOpen) renderHistory();
-    else {
-      state.selectedHistory = null;
-    }
+  }
+
+  el.historyToggle.addEventListener("click", () => {
+    if (isWide()) return;
+    state.historyOpen = !state.historyOpen;
+    if (!state.historyOpen) state.selectedHistory = null;
+    syncHistoryUi();
   });
+
+  wideMq.addEventListener("change", syncHistoryUi);
 
   el.menuBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -527,7 +550,7 @@
     if (action === "clear-history") {
       state.history = [];
       saveHistory();
-      if (state.historyOpen) renderHistory();
+      if (state.historyOpen || isWide()) renderHistory();
       toast("History cleared");
     } else if (action === "toggle-format") {
       state.useGrouping = !state.useGrouping;
@@ -597,6 +620,7 @@
   updateAngleLabel();
   updateInvLabels();
   el.formatLabel.textContent = state.useGrouping ? "standard" : "plain";
+  syncHistoryUi();
   refresh();
 
   if ("serviceWorker" in navigator) {

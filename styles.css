@@ -18,11 +18,13 @@
   --danger: #ffb4ab;
   --history-chip: #3b3f6b;
   --shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
-  --radius-key: 999px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
   --font: "Google Sans", "Product Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --mono: "Roboto Mono", "SF Mono", ui-monospace, monospace;
+  --pad-gap: clamp(8px, 1.4vw, 14px);
+  --key-max: 120px;
 }
 
 *,
@@ -45,38 +47,48 @@ body {
 }
 
 body {
-  display: grid;
-  place-items: center;
+  min-height: 100dvh;
 }
 
 .app {
-  width: min(100vw, 430px);
+  width: 100%;
   height: 100dvh;
   max-height: 100dvh;
   display: grid;
+  grid-template-columns: 1fr;
   grid-template-rows: auto minmax(100px, 1fr) auto;
+  grid-template-areas:
+    "top"
+    "display"
+    "keypad";
   padding:
     calc(8px + var(--safe-top))
-    14px
-    calc(12px + var(--safe-bottom));
+    calc(14px + var(--safe-right))
+    calc(12px + var(--safe-bottom))
+    calc(14px + var(--safe-left));
   gap: 6px;
-  background:
-    radial-gradient(120% 80% at 50% -10%, #1a1f4a 0%, transparent 55%),
-    var(--bg);
+  background: var(--bg);
   position: relative;
 }
 
 .app.history-open {
-  grid-template-rows: auto minmax(0, 1.2fr) auto auto;
+  grid-template-rows: auto minmax(0, 1.1fr) auto auto;
+  grid-template-areas:
+    "top"
+    "history"
+    "display"
+    "keypad";
 }
 
 .top-bar {
+  grid-area: top;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
   min-height: 44px;
   padding: 0 2px;
+  z-index: 5;
 }
 
 .icon-btn {
@@ -138,6 +150,7 @@ body {
 }
 
 .history-panel {
+  grid-area: history;
   min-height: 0;
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -224,6 +237,7 @@ body {
 }
 
 .display {
+  grid-area: display;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -246,7 +260,8 @@ body {
   transition: opacity 0.15s ease;
 }
 
-.app.history-open .current-label {
+.app.history-open .current-label,
+.app.wide .current-label {
   opacity: 1;
 }
 
@@ -264,7 +279,7 @@ body {
 }
 
 .expression {
-  font-size: clamp(1.8rem, 8vw, 2.75rem);
+  font-size: clamp(1.8rem, 7vw, 3.25rem);
   font-weight: 400;
   line-height: 1.15;
   text-align: right;
@@ -277,14 +292,14 @@ body {
 }
 
 .expression.small {
-  font-size: clamp(1.25rem, 5.5vw, 1.85rem);
+  font-size: clamp(1.25rem, 4.5vw, 2rem);
 }
 
 .result {
   min-height: 1.6em;
   text-align: right;
   color: var(--result);
-  font-size: clamp(1.15rem, 4.8vw, 1.6rem);
+  font-size: clamp(1.15rem, 4vw, 1.85rem);
   font-weight: 500;
   opacity: 0.95;
 }
@@ -295,18 +310,20 @@ body {
 }
 
 .keypad {
+  grid-area: keypad;
   display: grid;
-  gap: 10px;
+  gap: var(--pad-gap);
   padding: 4px 2px 0;
-  flex-shrink: 0;
+  width: min(100%, 560px);
+  margin-inline: auto;
 }
 
 .sci-pad,
 .main-pad {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  align-items: start;
+  gap: var(--pad-gap);
+  align-items: stretch;
 }
 
 .sci-pad[hidden] {
@@ -320,10 +337,11 @@ body {
   aspect-ratio: 1 / 1;
   width: 100%;
   height: auto;
-  max-width: 92px;
+  max-width: var(--key-max);
+  max-height: var(--key-max);
   justify-self: center;
   font: inherit;
-  font-size: clamp(1.2rem, 5vw, 1.6rem);
+  font-size: clamp(1.2rem, 4.5vw, 1.7rem);
   font-weight: 500;
   color: var(--text);
   background: var(--num);
@@ -336,8 +354,8 @@ body {
 }
 
 .key:active {
-  transform: scale(0.94);
-  filter: brightness(1.15);
+  transform: scale(0.96);
+  filter: brightness(1.12);
 }
 
 .key.num {
@@ -347,13 +365,12 @@ body {
 .key.op {
   background: var(--op);
   color: #c5cbff;
-  font-size: 1.35rem;
 }
 
 .key.op.accent {
   background: var(--op-accent);
   color: #fff;
-  font-size: 1.55rem;
+  font-size: clamp(1.35rem, 5vw, 1.85rem);
 }
 
 .key.ac {
@@ -365,18 +382,19 @@ body {
 .key.eq {
   background: var(--eq);
   color: var(--eq-text);
-  font-size: 1.7rem;
+  font-size: clamp(1.5rem, 5.5vw, 2rem);
   font-weight: 700;
 }
 
 .key.sci {
   background: var(--sci);
   color: #d5d8ff;
-  font-size: clamp(0.85rem, 3.2vw, 1.05rem);
+  font-size: clamp(0.85rem, 2.8vw, 1.1rem);
   font-weight: 600;
   aspect-ratio: 1.7 / 1;
   border-radius: 999px;
   max-width: none;
+  max-height: none;
   width: 100%;
 }
 
@@ -385,6 +403,7 @@ body {
   color: var(--ac-text);
 }
 
+/* Phone landscape / short screens */
 @media (max-height: 720px) {
   .sci-pad,
   .main-pad {
@@ -397,7 +416,7 @@ body {
 }
 
 @media (max-height: 640px) {
-  .app.history-open .history-panel {
+  .app.history-open:not(.wide) .history-panel {
     max-height: 28dvh;
   }
 
@@ -406,19 +425,95 @@ body {
   }
 }
 
-@media (min-width: 720px) {
-  body {
-    background:
-      radial-gradient(ellipse at top, #1a2048 0%, #070914 55%),
-      #070914;
+/*
+ * Tablet / desktop (wide): fill the screen.
+ * Google Calculator uses a persistent history column on the left
+ * and a full-height keypad on the right — not a phone-sized card.
+ */
+@media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+  .app,
+  .app.history-open {
+    grid-template-columns: minmax(260px, 0.9fr) minmax(420px, 1.35fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "top top"
+      "history display"
+      "history keypad";
+    column-gap: clamp(16px, 3vw, 40px);
+    row-gap: 8px;
+    padding:
+      calc(12px + var(--safe-top))
+      calc(24px + var(--safe-right))
+      calc(16px + var(--safe-bottom))
+      calc(20px + var(--safe-left));
   }
 
-  .app {
-    height: min(920px, 96dvh);
-    border-radius: 28px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
-    overflow: hidden;
+  .history-panel,
+  .app.history-open .history-panel {
+    display: block;
+    border-bottom: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    margin: 0;
+    padding-right: clamp(12px, 2vw, 24px);
+    animation: none;
+  }
+
+  .history-toggle-wide-hide {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .display {
+    padding: 8px 12px 16px;
+  }
+
+  .expression {
+    font-size: clamp(2.4rem, 4.5vw, 4rem);
+  }
+
+  .result {
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+  }
+
+  .keypad {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    align-content: end;
+    --key-max: 132px;
+    --pad-gap: clamp(10px, 1.2vw, 16px);
+  }
+
+  .main-pad .key {
+    border-radius: 999px;
+    aspect-ratio: 1.55 / 1;
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: auto;
+    font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+  }
+
+  .main-pad .key.op.accent {
+    font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  }
+
+  .main-pad .key.eq {
+    font-size: clamp(1.65rem, 2.6vw, 2.3rem);
+  }
+
+  .sci-pad .key.sci {
+    aspect-ratio: 2.1 / 1;
+  }
+}
+
+/* Very wide desktops: keep keypad from stretching endlessly */
+@media (min-width: 1400px) {
+  .app,
+  .app.history-open {
+    grid-template-columns: minmax(300px, 420px) minmax(560px, 780px);
+    justify-content: center;
+    column-gap: 48px;
   }
 }
 
