@@ -1,0 +1,11 @@
+.DS_Store
+Thumbs.db
+*.log
+_site/
+
+# Reference screenshots used during design (not shipped)
+images/image.png
+images/image copy.png
+images/image copy 2.png
+images/image copy 3.png
+images/image copy 4.png
