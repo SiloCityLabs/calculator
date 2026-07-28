@@ -4,10 +4,10 @@
   "description": "A fast offline calculator — Google-style, installable PWA.",
   "start_url": "./",
   "scope": "./",
-  "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#0b0e21",
   "theme_color": "#0b0e21",
+  "display": "standalone",
+  "orientation": "any",
   "categories": ["utilities", "productivity"],
   "icons": [
     {

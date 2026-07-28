@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
-  <meta name="theme-color" content="#0b0e21" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0b0e21" id="themeColor" />
+  <meta name="color-scheme" content="dark light" />
   <meta name="description" content="A fast, offline calculator — just like Google's, as a PWA." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -15,6 +15,12 @@
   <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png" />
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
   <link rel="stylesheet" href="styles.css" />
+  <script>
+    (() => {
+      const t = localStorage.getItem("calc.theme.v1") || "system";
+      document.documentElement.dataset.theme = ["system", "light", "dark"].includes(t) ? t : "system";
+    })();
+  </script>
 </head>
 <body>
   <div id="app" class="app">
@@ -31,6 +37,7 @@
       </button>
       <div class="menu-panel" id="menuPanel" hidden role="menu">
         <button type="button" role="menuitem" data-action="clear-history">Clear history</button>
+        <button type="button" role="menuitem" data-action="toggle-theme">Theme: <span id="themeLabel">system</span></button>
         <button type="button" role="menuitem" data-action="toggle-format">Format: <span id="formatLabel">standard</span></button>
         <button type="button" role="menuitem" data-action="copy-result">Copy result</button>
         <button type="button" role="menuitem" data-action="install" id="installItem" hidden>Install app</button>

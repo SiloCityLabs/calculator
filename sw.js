@@ -1,4 +1,4 @@
-const CACHE = "calculator-v5";
+const CACHE = "calculator-v6";
 const ASSETS = [
   "./",
   "./index.html",

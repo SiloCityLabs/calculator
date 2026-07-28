@@ -5,7 +5,9 @@
   const STORAGE_MEMORY = "calc.memory.v1";
   const STORAGE_FORMAT = "calc.format.v1";
   const STORAGE_ANGLE = "calc.angle.v1";
+  const STORAGE_THEME = "calc.theme.v1";
   const MAX_HISTORY = 100;
+  const THEME_ORDER = ["system", "light", "dark"];
 
   const el = {
     app: document.getElementById("app"),
@@ -21,6 +23,8 @@
     angleMode: document.getElementById("angleMode"),
     invToggle: document.getElementById("invToggle"),
     formatLabel: document.getElementById("formatLabel"),
+    themeLabel: document.getElementById("themeLabel"),
+    themeColor: document.getElementById("themeColor"),
     installItem: document.getElementById("installItem"),
     toast: document.getElementById("toast"),
     currentLabel: document.getElementById("currentLabel"),
@@ -34,6 +38,10 @@
     inverse: false,
     degrees: localStorage.getItem(STORAGE_ANGLE) !== "rad",
     useGrouping: localStorage.getItem(STORAGE_FORMAT) !== "plain",
+    theme: (() => {
+      const t = localStorage.getItem(STORAGE_THEME);
+      return THEME_ORDER.includes(t) ? t : "system";
+    })(),
     history: loadHistory(),
     memory: Number(localStorage.getItem(STORAGE_MEMORY) || 0),
     selectedHistory: null,
@@ -60,6 +68,19 @@
     toast._t = setTimeout(() => {
       el.toast.hidden = true;
     }, 1600);
+  }
+
+  function resolvedTheme() {
+    if (state.theme === "light" || state.theme === "dark") return state.theme;
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  }
+
+  function applyTheme() {
+    document.documentElement.dataset.theme = state.theme;
+    if (el.themeLabel) el.themeLabel.textContent = state.theme;
+    const resolved = resolvedTheme();
+    const color = resolved === "light" ? "#f7f5fa" : "#0b0e21";
+    if (el.themeColor) el.themeColor.setAttribute("content", color);
   }
 
   function displayExpr() {
@@ -552,6 +573,12 @@
       saveHistory();
       if (state.historyOpen || isWide()) renderHistory();
       toast("History cleared");
+    } else if (action === "toggle-theme") {
+      const i = THEME_ORDER.indexOf(state.theme);
+      state.theme = THEME_ORDER[(i + 1) % THEME_ORDER.length];
+      localStorage.setItem(STORAGE_THEME, state.theme);
+      applyTheme();
+      toast(`Theme: ${state.theme}`);
     } else if (action === "toggle-format") {
       state.useGrouping = !state.useGrouping;
       localStorage.setItem(STORAGE_FORMAT, state.useGrouping ? "standard" : "plain");
@@ -620,6 +647,10 @@
   updateAngleLabel();
   updateInvLabels();
   el.formatLabel.textContent = state.useGrouping ? "standard" : "plain";
+  applyTheme();
+  window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
+    if (state.theme === "system") applyTheme();
+  });
   syncHistoryUi();
   refresh();
 
