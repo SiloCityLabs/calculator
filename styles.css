@@ -218,10 +218,26 @@ body {
   background: var(--menu-hover);
 }
 
-.menu-build {
+.menu-footer {
   margin-top: 4px;
-  padding: 10px 14px 6px;
+  padding: 10px 14px 8px;
   border-top: 1px solid var(--history-border);
+  display: grid;
+  gap: 6px;
+}
+
+.menu-link {
+  color: var(--accent);
+  font-size: 0.85rem;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.menu-link:hover {
+  text-decoration: underline;
+}
+
+.menu-build {
   color: var(--text-dim);
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
