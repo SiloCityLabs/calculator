@@ -1,4 +1,4 @@
-const CACHE = "calculator-v8";
+const CACHE = "calculator-__BUILD_HASH__";
 const ASSETS = [
   "./",
   "./index.html",

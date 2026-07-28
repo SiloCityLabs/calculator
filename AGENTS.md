@@ -41,12 +41,12 @@ Ignore Material You dynamic colors from screenshots — stock pulls theme from t
 | `styles.css` | Themes, portrait / landscape / wide layouts |
 | `calc.js` | Expression tokenizer + RPN evaluator (`CalcEngine`) |
 | `app.js` | UI state, history, memory, theme, keyboard, SW register |
-| `sw.js` | Offline cache — **bump `CACHE` version on asset changes** |
+| `sw.js` | Offline cache — cache name stamped with `__BUILD_HASH__` at deploy |
+| `.github/workflows/deploy.yml` | Copies static files → Pages artifact; replaces `__BUILD_HASH__` with short git SHA |
 | `manifest.webmanifest` | PWA manifest (`orientation: any`) |
 | `CNAME` | `calculator.silocitylabs.com` |
 | `icons/` | Circular `any` icons + full-bleed `maskable` icons |
 | `images/icon.png` | Source brand artwork (square); derive icons from this |
-| `.github/workflows/deploy.yml` | Copies static files → Pages artifact |
 
 Reference Play Store screenshots may live under `images/` but are **gitignored** and must not ship.
 
@@ -66,9 +66,8 @@ Menu cycles **system → light → dark** (`localStorage` key `calc.theme.v1`). 
 
 ## Deploy checklist (every meaningful ship)
 
-1. Bump `CACHE` in `sw.js` if cached assets changed.
-2. **Update README size numbers** (see below) — required every deploy that changes shipped bytes.
-3. Push to `main`; Actions deploys automatically.
+1. **Update README size numbers** (see below) — required every deploy that changes shipped bytes.
+2. Push to `main`; Actions stamps `__BUILD_HASH__` and deploys automatically (SW cache name follows the commit).
 
 ### README size (required update)
 

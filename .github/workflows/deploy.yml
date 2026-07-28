@@ -27,9 +27,17 @@ jobs:
       - name: Prepare site artifact
         run: |
           mkdir -p _site
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          echo "Build hash: $SHORT_SHA"
+
           # App shell
           cp index.html styles.css calc.js app.js sw.js manifest.webmanifest _site/
           cp .nojekyll CNAME _site/
+
+          # Stamp commit hash into the menu + service worker cache name
+          sed -i "s/__BUILD_HASH__/${SHORT_SHA}/g" _site/index.html
+          sed -i "s/__BUILD_HASH__/${SHORT_SHA}/g" _site/sw.js
+
           # Icons (PWA / favicons)
           mkdir -p _site/icons
           cp -r icons/. _site/icons/

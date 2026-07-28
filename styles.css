@@ -218,6 +218,19 @@ body {
   background: var(--menu-hover);
 }
 
+.menu-build {
+  margin-top: 4px;
+  padding: 10px 14px 6px;
+  border-top: 1px solid var(--history-border);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  user-select: text;
+  cursor: text;
+  -webkit-user-select: text;
+}
+
 .history-panel {
   grid-area: history;
   min-height: 0;
