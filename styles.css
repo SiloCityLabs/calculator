@@ -201,12 +201,18 @@ body {
   color: var(--text-dim);
   font-size: 0.95rem;
   word-break: break-all;
+  -webkit-user-select: text;
+  user-select: text;
+  cursor: text;
 }
 
 .history-result {
   color: var(--text);
   font-size: 1.35rem;
   font-weight: 500;
+  -webkit-user-select: text;
+  user-select: text;
+  cursor: text;
 }
 
 .history-actions {
@@ -289,6 +295,9 @@ body {
   transform-origin: right center;
   transition: font-size 0.12s ease;
   caret-color: var(--accent);
+  -webkit-user-select: text;
+  user-select: text;
+  cursor: text;
 }
 
 .expression.small {
@@ -302,6 +311,9 @@ body {
   font-size: clamp(1.15rem, 4vw, 1.85rem);
   font-weight: 500;
   opacity: 0.95;
+  -webkit-user-select: text;
+  user-select: text;
+  cursor: text;
 }
 
 .result.error {
