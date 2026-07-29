@@ -113,16 +113,14 @@
     return state.expr || "0";
   }
 
-  function fitExpression() {
+  function syncExpression() {
     const node = el.expression;
-    node.classList.remove("small");
+    const wrap = node.parentElement;
     node.textContent = displayExpr();
     requestAnimationFrame(() => {
-      const parent = node.parentElement;
-      if (!parent) return;
-      if (node.scrollWidth > parent.clientWidth + 2) {
-        node.classList.add("small");
-      }
+      if (!wrap) return;
+      // Keep the newest input in view (right edge for a right-aligned expression).
+      wrap.scrollLeft = Math.max(0, wrap.scrollWidth - wrap.clientWidth);
     });
   }
 
@@ -155,7 +153,7 @@
   }
 
   function refresh() {
-    fitExpression();
+    syncExpression();
     liveEvaluate();
     updateAcLabel();
   }
@@ -327,7 +325,7 @@
     state.expr = raw;
     state.justEvaluated = true;
     el.result.textContent = "";
-    fitExpression();
+    syncExpression();
     updateAcLabel();
   }
 
@@ -543,7 +541,7 @@
       "aria-label",
       state.scientific ? "Hide scientific functions" : "Show scientific functions"
     );
-    requestAnimationFrame(fitExpression);
+    requestAnimationFrame(syncExpression);
   });
 
   const wideMq = window.matchMedia("(min-width: 900px) and (min-aspect-ratio: 1/1)");

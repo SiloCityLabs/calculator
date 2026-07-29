@@ -392,8 +392,12 @@ body {
 }
 
 .expression-wrap {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface) transparent;
+  -webkit-overflow-scrolling: touch;
 }
 
 .expression {
@@ -402,18 +406,14 @@ body {
   line-height: 1.15;
   text-align: right;
   white-space: nowrap;
+  width: max-content;
+  min-width: 100%;
   outline: none;
   letter-spacing: 0.01em;
-  transform-origin: right center;
-  transition: font-size 0.12s ease;
   caret-color: var(--accent);
   -webkit-user-select: text;
   user-select: text;
   cursor: text;
-}
-
-.expression.small {
-  font-size: clamp(1.25rem, 4.5vw, 2rem);
 }
 
 .result {
