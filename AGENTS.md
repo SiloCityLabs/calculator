@@ -45,7 +45,7 @@ Ignore Material You dynamic colors from screenshots — stock pulls theme from t
 | `.github/workflows/deploy.yml` | Copies static files → Pages artifact; replaces `__BUILD_HASH__` with short git SHA |
 | `manifest.webmanifest` | PWA manifest (`orientation: any`) |
 | `CNAME` | `calculator.silocitylabs.com` |
-| `icons/` | Circular `any` icons + full-bleed `maskable` icons |
+| `icons/` | Square icons derived from `images/icon.png` |
 | `images/icon.png` | Source brand artwork (square); derive icons from this |
 
 Reference Play Store screenshots may live under `images/` but are **gitignored** and must not ship.
@@ -55,7 +55,7 @@ Reference Play Store screenshots may live under `images/` but are **gitignored**
 - **No bundler / npm.** Edit files directly; preview with `python3 -m http.server`.
 - Relative URLs only (`./`) so project Pages + custom domain both work.
 - Keep `user-select: none` on chrome/keys; **expression, result, and history text must stay selectable**.
-- PWA icons: `purpose: any` = circular with transparent corners; `purpose: maskable` = opaque full-bleed square (avoids “square inside a circle”).
+- PWA icons: square full-bleed artwork from `images/icon.png` (OS may still apply its own mask).
 - After icon/manifest changes, users often must **uninstall + reinstall** the PWA for the launcher icon to refresh.
 - Prefer matching Google Calculator UX over inventing new patterns.
 - Button haptics use `navigator.vibrate` (Android Chrome / installed PWA). Toggle in the ⋮ menu; no-op where unsupported (e.g. iOS).
