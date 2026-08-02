@@ -4,7 +4,7 @@ Pixel-style calculator as a standalone static PWA — no app store install requi
 
 **Live:** https://calculator.silocitylabs.com
 
-My journey to an appless life starts with PWAs. The Play Store Google Calculator sits at **~10.32 MB** on my phone. This PWA ships the same kind of experience in about **106 KB** (~67 KB transferred with gzip) — roughly **95× smaller**, fully offline once installed, and no store required.
+My journey to an appless life starts with PWAs. The Play Store Google Calculator sits at **~10.32 MB** on my phone. This PWA ships the same kind of experience in about **109 KB** (~68 KB transferred with gzip) — roughly **92× smaller**, fully offline once installed, and no store required.
 
 ## Features
 
@@ -22,8 +22,8 @@ My journey to an appless life starts with PWAs. The Play Store Google Calculator
 | | Size |
 |---|---|
 | Android Calculator (Play Store) | ~10.32 MB |
-| This PWA (all shipped files) | **~106 KB** (0.104 MB) |
-| Typical transfer (gzip text + icons) | **~67 KB** |
+| This PWA (all shipped files) | **~109 KB** (0.107 MB) |
+| Typical transfer (gzip text + icons) | **~68 KB** |
 
 > **Maintainers / agents:** refresh these numbers on **every deploy** that changes shipped assets. See `AGENTS.md` for the measurement command.
 
