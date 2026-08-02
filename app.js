@@ -10,6 +10,8 @@
   const MAX_HISTORY = 100;
   const THEME_ORDER = ["system", "light", "dark"];
   const HAPTIC_MS = 12;
+  const HAPTIC_SOUND = "./haptic.mp3";
+  let hapticAudio = null;
 
   const el = {
     app: document.getElementById("app"),
@@ -87,8 +89,48 @@
     if (el.themeColor) el.themeColor.setAttribute("content", color);
   }
 
-  function hapticsSupported() {
+  function vibrationAvailable() {
     return typeof navigator !== "undefined" && typeof navigator.vibrate === "function";
+  }
+
+  function audioHapticAvailable() {
+    if (typeof Audio === "undefined") return false;
+    try {
+      const probe = document.createElement("audio");
+      // Only offer the mp3 fallback when the browser can actually play it.
+      return !!probe.canPlayType && probe.canPlayType("audio/mpeg") !== "";
+    } catch {
+      return false;
+    }
+  }
+
+  function hapticsSupported() {
+    return vibrationAvailable() || audioHapticAvailable();
+  }
+
+  function ensureHapticAudio() {
+    if (hapticAudio) return hapticAudio;
+    if (!audioHapticAvailable()) return null;
+    try {
+      hapticAudio = new Audio(HAPTIC_SOUND);
+      hapticAudio.preload = "auto";
+      return hapticAudio;
+    } catch {
+      return null;
+    }
+  }
+
+  function playHapticSound() {
+    const base = ensureHapticAudio();
+    if (!base) return;
+    try {
+      // Clone so rapid taps don't cut each other off.
+      const tick = base.cloneNode();
+      const play = tick.play();
+      if (play && typeof play.catch === "function") play.catch(() => {});
+    } catch {
+      /* ignore autoplay / decode errors */
+    }
   }
 
   function syncHapticsLabel() {
@@ -101,12 +143,17 @@
   }
 
   function haptic(ms = HAPTIC_MS) {
-    if (!state.haptics || !hapticsSupported()) return;
-    try {
-      navigator.vibrate(ms);
-    } catch {
-      /* ignore */
+    if (!state.haptics) return;
+    // Prefer real device vibration when the API exists; mp3 only as fallback.
+    if (vibrationAvailable()) {
+      try {
+        navigator.vibrate(ms);
+      } catch {
+        /* ignore */
+      }
+      return;
     }
+    if (audioHapticAvailable()) playHapticSound();
   }
 
   function displayExpr() {
@@ -689,6 +736,8 @@
   el.formatLabel.textContent = state.useGrouping ? "standard" : "plain";
   applyTheme();
   syncHapticsLabel();
+  // Warm the click sample when we'll need the audio fallback.
+  if (!vibrationAvailable() && audioHapticAvailable()) ensureHapticAudio();
   window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
     if (state.theme === "system") applyTheme();
   });

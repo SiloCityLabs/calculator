@@ -58,7 +58,7 @@ Reference Play Store screenshots may live under `images/` but are **gitignored**
 - PWA icons: square full-bleed artwork from `images/icon.png` (OS may still apply its own mask).
 - After icon/manifest changes, users often must **uninstall + reinstall** the PWA for the launcher icon to refresh.
 - Prefer matching Google Calculator UX over inventing new patterns.
-- Button haptics use `navigator.vibrate` (Android Chrome / installed PWA). Toggle in the ⋮ menu; no-op where unsupported (e.g. iOS).
+- Button haptics use `navigator.vibrate` when that API exists; otherwise fall back to `haptic.mp3` (only if MP3 playback is supported). Toggle in the ⋮ menu.
 
 ## Themes
 
@@ -73,13 +73,13 @@ Menu cycles **system → light → dark** (`localStorage` key `calc.theme.v1`). 
 
 The README compares this PWA to the Play Store Google Calculator (~10.32 MB). Those KB figures go stale quickly — **recompute and update the Size section on every deploy**.
 
-Measure the same set the workflow ships (`index.html`, `styles.css`, `calc.js`, `app.js`, `sw.js`, `manifest.webmanifest`, `.nojekyll`, `CNAME`, `icons/**`, `images/icon.png` if present):
+Measure the same set the workflow ships (`index.html`, `styles.css`, `calc.js`, `app.js`, `sw.js`, `manifest.webmanifest`, `.nojekyll`, `CNAME`, `haptic.mp3` if present, `icons/**`, `images/icon.png` if present):
 
 ```bash
 python3 - <<'PY'
 import os, io, gzip
 files = []
-for p in ['index.html','styles.css','calc.js','app.js','sw.js','manifest.webmanifest','.nojekyll','CNAME']:
+for p in ['index.html','styles.css','calc.js','app.js','sw.js','manifest.webmanifest','.nojekyll','CNAME','haptic.mp3']:
     if os.path.exists(p): files.append(p)
 for dp, _, fs in os.walk('icons'):
     for f in fs: files.append(os.path.join(dp, f))

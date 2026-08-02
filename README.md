@@ -12,7 +12,7 @@ My journey to an appless life starts with PWAs. The Play Store Google Calculator
 - Basic + scientific keypad (√ π ^ ! sin cos tan ln log Deg/Rad Inv)
 - Portrait circles / landscape 5-column pills (stock-style)
 - Light, dark, and system themes
-- Optional button haptics (Android / Vibration API)
+- Optional button haptics (`navigator.vibrate`, or `haptic.mp3` fallback)
 - History with copy / memory store (MS)
 - Installable offline PWA
 - Keyboard support on desktop

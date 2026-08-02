@@ -6,6 +6,7 @@ const ASSETS = [
   "./calc.js",
   "./app.js",
   "./manifest.webmanifest",
+  "./haptic.mp3",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png",
